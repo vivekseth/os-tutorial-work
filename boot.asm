@@ -9,9 +9,10 @@
 ; Infinite Loop
 jmp $ ; jump to current address = infinite loop
 
-%include "print.asm"
-%include "print_hex.asm"
-%include "disk.asm"
+; %include "print.asm"
+; %include "print_hex.asm"
+; %include "disk.asm"
+%include "gdt.asm"
 
 
 ; Padding and magic BIOS number
