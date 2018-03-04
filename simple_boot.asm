@@ -1,3 +1,5 @@
+[org 0x7c00]
+
 mov ah, 0x0e ; tty mode
 
 ; First attempt
