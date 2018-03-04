@@ -29,3 +29,28 @@ pm_print_string:
 .done:
   popa
   ret
+
+
+clear_screen: 
+  pusha
+
+  mov edx, VIDEO_MEMORY
+
+  mov al, 0x0
+  mov ah, WHITE_ON_BLACK
+
+  mov ecx, 0
+
+.loop:
+  cmp ecx, 80*25
+  je .done
+
+  mov [edx + 2 * ecx], ax
+
+  add ecx, 1
+  jmp .loop
+
+.done:
+
+  popa
+  ret

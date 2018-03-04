@@ -26,6 +26,8 @@
 ; 32-bit Protected Mode Entry Point
 [bits 32]
 BEGIN_PM:
+  call clear_screen
+
   mov ebx, MSG_PROT_MODE
   call pm_print_string
   jmp $
