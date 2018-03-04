@@ -3,6 +3,13 @@
 mov bx, HELLO
 call print
 
+call new_line
+
+mov bx, GOODBYE
+call print
+
+call new_line
+
 
 ; Infinite Loop
 jmp $ ; jump to current address = infinite loop
