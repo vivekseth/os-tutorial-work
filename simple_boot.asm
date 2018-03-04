@@ -1,54 +1,57 @@
-[org 0x7c00]
+; [org 0x7c00]
 
 mov ah, 0x0e ; tty mode
 
-; First attempt
-mov al, "1"
+mov bp, 0x8000
+mov sp, bp
+
+push 'A'
+push 'B'
+push 'C'
+push 'D'
+
+; Print out stack elements in order added
+mov al, [bp - 2 * 1]
 call print_char
 
-mov al, the_secret
-int 0x10
-call new_line
-call new_line
-
-; Second attempt
-mov al, "2"
+mov al, [bp - 2 * 2]
 call print_char
 
-mov al, [the_secret]
-int 0x10
-call new_line
-call new_line
-
-; Third attempt
-mov al, "3"
+mov al, [bp - 2 * 3]
 call print_char
 
-mov al, [the_secret + 0x7c00]
-int 0x10
-call new_line
-call new_line
-
-; Fourth attempt
-mov al, "4"
+mov al, [bp - 2 * 4]
 call print_char
 
-mov bx, the_secret
-add bx, 0x7c00
-mov al, [bx]
-int 0x10
-call new_line
-call new_line
+
+mov al, [0x8000]
+call print_char
+
+; pop elements off of stack
+
+pop bx
+mov al, bl
+call print_char
+
+pop bx
+mov al, bl
+call print_char
+
+pop bx
+mov al, bl
+call print_char
+
+pop bx
+mov al, bl
+call print_char
 
 
+mov al, [0x8000]
+call print_char
 
 
 ; Infinite Loop
 jmp $ ; jump to current address = infinite loop
-
-
-the_secret:
-  db "X"
 
 new_line:
   mov al, 0xD
@@ -61,6 +64,12 @@ new_line:
 print_char:
   int 0x10
   call new_line
+  ret
+
+pop_and_print:
+  pop bx
+  mov al, bl
+  call print_char
   ret
 
 
