@@ -1,9 +1,9 @@
 
-simple_boot.bin: simple_boot.asm print.asm print_hex.asm disk.asm
-	nasm -f bin simple_boot.asm -o simple_boot.bin
+boot.bin: boot.asm print.asm print_hex.asm disk.asm
+	nasm -f bin boot.asm -o boot.bin
 
-run: simple_boot.bin
-	qemu-system-x86_64 ./simple_boot.bin
+run: boot.bin
+	qemu-system-x86_64 ./boot.bin
 
 clean:
-	rm simple_boot.bin
+	rm boot.bin
