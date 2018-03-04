@@ -1,24 +1,67 @@
-_start:
-    mov ah, 0x0e ; tty mode
-    mov al, 'H'
-    int 0x10
-    mov al, 'e'
-    int 0x10
-    mov al, 'l'
-    int 0x10
-    int 0x10 ; 'l' is still on al, remember?
-    mov al, 'o'
-    int 0x10
-    call test
+mov ah, 0x0e ; tty mode
 
-test:
-    jmp $
-    ret    
+; First attempt
+mov al, "1"
+call print_char
 
-; jmp $ ; jump to current address = infinite loop
+mov al, the_secret
+int 0x10
+call new_line
+call new_line
 
-; Fill bytes up to (and including) 510 with zero
+; Second attempt
+mov al, "2"
+call print_char
+
+mov al, [the_secret]
+int 0x10
+call new_line
+call new_line
+
+; Third attempt
+mov al, "3"
+call print_char
+
+mov al, [the_secret + 0x7c00]
+int 0x10
+call new_line
+call new_line
+
+; Fourth attempt
+mov al, "4"
+call print_char
+
+mov bx, the_secret
+add bx, 0x7c00
+mov al, [bx]
+int 0x10
+call new_line
+call new_line
+
+
+
+
+; Infinite Loop
+jmp $ ; jump to current address = infinite loop
+
+
+the_secret:
+  db "X"
+
+new_line:
+  mov al, 0xD
+  int 0x10
+  mov al, 0xA
+  int 0x10
+  ret
+
+; place char in $al first
+print_char:
+  int 0x10
+  call new_line
+  ret
+
+
+; Padding and magic BIOS number
 times 510-($-$$) db 0
-
-; Magic Number
 dw 0xaa55
