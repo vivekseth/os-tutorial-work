@@ -53,7 +53,7 @@ __half_byte_to_char_num:
   jmp _half_byte_to_char_complete
 
 __half_byte_to_char_letter:  
-  add cl, 0x41
+  add cl, 0x37
   jmp _half_byte_to_char_complete
 
 
