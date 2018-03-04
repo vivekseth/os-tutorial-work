@@ -1,23 +1,22 @@
 [org 0x7c00]
 
-mov bx, HELLO
-call print
+mov ah, 0x0e ; tty
 
-call new_line
-
-mov bx, GOODBYE
-call print
-
-call new_line
+mov dx, 0x4142
+call print_hex
 
 
 ; Infinite Loop
 jmp $ ; jump to current address = infinite loop
 
 %include "print.asm"
-
+%include "print_hex.asm"
 
 ; data
+
+the_secret:
+    db "X"
+
 HELLO:
     db 'Hello, World', 0
 

@@ -1,5 +1,5 @@
 
-simple_boot.bin: simple_boot.asm print.asm
+simple_boot.bin: simple_boot.asm print.asm print_hex.asm
 	nasm -f bin simple_boot.asm -o simple_boot.bin
 
 run: simple_boot.bin
