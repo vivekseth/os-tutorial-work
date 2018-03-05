@@ -31,26 +31,26 @@ pm_print_string:
   ret
 
 
-clear_screen: 
-  pusha
+; clear_screen: 
+;   pusha
 
-  mov edx, VIDEO_MEMORY
+;   mov edx, VIDEO_MEMORY
 
-  mov al, 0x0
-  mov ah, WHITE_ON_BLACK
+;   mov al, 0x0
+;   mov ah, WHITE_ON_BLACK
 
-  mov ecx, 0
+;   mov ecx, 0
 
-.loop:
-  cmp ecx, 80*25
-  je .done
+; .loop:
+;   cmp ecx, 80*25
+;   je .done
 
-  mov [edx + 2 * ecx], ax
+;   mov [edx + 2 * ecx], ax
 
-  add ecx, 1
-  jmp .loop
+;   add ecx, 1
+;   jmp .loop
 
-.done:
+; .done:
 
-  popa
-  ret
+;   popa
+;   ret

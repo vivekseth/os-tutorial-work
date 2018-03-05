@@ -4,6 +4,7 @@
 disk_load:
   pusha
 
+  ; ERROR IS HERE
   push dx
 
   mov ah, 0x02 ; BIOS read sector function
