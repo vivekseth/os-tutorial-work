@@ -49,20 +49,3 @@ disk_loop:
 
 DISK_ERROR: db "Disk read error", 0
 SECTORS_ERROR: db "Incorrect number of sectors read", 0
-
-
-
-
-
-
-mov ah, 0x02
-mov dl, 0 
-mov ch, 3 
-mov dh, 1
-mov cl, 4 
-mov al, 5
-
-mov bx, 0xa000
-mov es, bx
-mov bx, 0x1234
-int 0x13

@@ -20,8 +20,8 @@
 %include "gdt.asm"
 %include "switch_to_pm.asm"
 %include "pm_print.asm"
-; %include "print_hex.asm"
-; %include "disk.asm"
+%include "print_hex.asm"
+%include "disk.asm"
 
 ; 32-bit Protected Mode Entry Point
 [bits 32]
@@ -34,8 +34,8 @@ BEGIN_PM:
 
 ; Global Variables
 MSG_REAL_MODE db "Started in 16-bit Real Mode", 0
-MSG_PROT_MODE db "Successfully Landed in 32-bit Protected Mode", 0
-MSG_ERR_SWITCH_MODE db "Error Switching to Protected Mode", 0
+MSG_PROT_MODE db "Landed in 32-bit Protected Mode", 0
+MSG_ERR_SWITCH_MODE db "Error switching to 32b PM", 0
 
 ; Padding and magic BIOS number
 times 510-($-$$) db 0
