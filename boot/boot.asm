@@ -16,12 +16,12 @@ KERNEL_OFFSET equ 0x1000
   jmp $ ; should never be called
 
 ; Included Files
-%include "print.asm"
-%include "gdt.asm"
-%include "switch_to_pm.asm"
-%include "pm_print.asm"
-%include "print_hex.asm"
-%include "disk.asm"
+%include "boot/print.asm"
+%include "boot/gdt.asm"
+%include "boot/switch_to_pm.asm"
+%include "boot/pm_print.asm"
+%include "boot/print_hex.asm"
+%include "boot/disk.asm"
 
 [bits 16]
 load_kernel:

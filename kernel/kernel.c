@@ -21,12 +21,11 @@ char color_format(char fc, char bc) {
 
 void clear_screen() {
   int code = 0;
-
-  for (int x=0; x<80; x++) {
-    for (int y=0; y<25; y++) {
+  for (int y=0; y<25; y++) {
+    for (int x=0; x<80; x++) {
       char f = code / 16;
       char b = code % 16;
-      set_char_at('X', color_format(f, b), x, y);
+      set_char_at('@', color_format(f, b), x, y);
       code = (code + 1) % (16 * 16);
     }
   }
