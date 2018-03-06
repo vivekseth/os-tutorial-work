@@ -1,4 +1,5 @@
 ; DX = 16bit hex value
+[bits 16]
 print_hex:
   pusha
 

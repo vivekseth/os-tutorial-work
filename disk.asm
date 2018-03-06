@@ -1,10 +1,10 @@
 ; load 'dh' sectors from drive 'dl' into ES:BX
 ; cylinder = 0
 ; starting sector = 2
+[bits 16]
 disk_load:
   pusha
 
-  ; ERROR IS HERE
   push dx
 
   mov ah, 0x02 ; BIOS read sector function

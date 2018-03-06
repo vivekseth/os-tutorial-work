@@ -1,19 +1,20 @@
 ; BX = pointer to NULL terminated string
+[bits 16]
 print: 
   pusha
 
-_print_iterate:
+.iterate:
   mov al, [bx] 
   cmp al, 0
-  je _print_done
+  je .done
   
   mov ah, 0x0e
   int 0x10
 
   add bx, 1
-  jmp _print_iterate
+  jmp .iterate
 
-_print_done:
+.done:
   popa
   ret
 

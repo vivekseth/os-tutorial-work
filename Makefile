@@ -15,7 +15,7 @@ boot.bin: boot.asm disk.asm gdt.asm kernel_entry.asm pm_print.asm print.asm prin
 	nasm -f bin boot.asm -o boot.bin
 
 run: os.bin
-	qemu-system-x86_64 ./os.bin
+	qemu-system-x86_64 -fda ./os.bin
 
 clean:
 	rm *.o
