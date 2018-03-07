@@ -3,6 +3,8 @@
 CC = i386-elf-gcc
 GDB = i386-elf-gdb
 LD = i386-elf-ld
+EMU = qemu-system-x86_64
+
 # -g: Use debugging symbols in gcc
 CFLAGS = -g
 
@@ -20,16 +22,23 @@ boot.bin: \
 	nasm -f bin ./boot/boot.asm -o boot.bin
 
 kernel.bin: kernel_entry.o kernel.o
-	i386-elf-ld -o $@ -Ttext 0x1000 $^ --oformat binary
+	${LD} -o $@ -Ttext 0x1000 $^ --oformat binary
 
 kernel.o: ./kernel/kernel.c
-	i386-elf-gcc -ffreestanding -c $^ -o $@
+	${CC} -ffreestanding -c $^ -o $@
 
 kernel_entry.o: ./boot/kernel_entry.asm
 	nasm $^ -f elf -o $@
 
+kernel.elf: kernel_entry.o kernel.o
+	${LD} -o $@ -Ttext 0x1000 $^
+
 run: os.bin
-	qemu-system-x86_64 -fda ./os.bin
+	${EMU} -fda ./os.bin
+
+debug: os.bin kernel.elf
+	${EMU} -s -fda ./os.bin \
+	& ${GDB} -ex "target remote localhost:1234" -ex "symbol-file kernel.elf"
 
 clean:
 	rm *.o
