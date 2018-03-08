@@ -6,7 +6,7 @@ LD = i386-elf-ld
 EMU = qemu-system-i386
 
 # -g: Use debugging symbols in gcc
-CFLAGS = -g
+CFLAGS = -g -I./ -masm=intel
 
 os.bin: boot.bin kernel.bin
 	cat $^ > $@
@@ -21,16 +21,19 @@ boot.bin: \
 	./boot/switch_to_pm.asm
 	nasm ./boot/boot.asm -f bin -o boot.bin
 
-kernel.bin: kernel_entry.o kernel.o
+kernel.bin: kernel_entry.o kernel.o ports.o
 	${LD} -o $@ -Ttext 0x1000 $^ --oformat binary
 
 kernel.o: ./kernel/kernel.c
 	${CC} ${CFLAGS} -ffreestanding -c $^ -o $@
 
+ports.o: ./drivers/ports.c
+	${CC} ${CFLAGS} -ffreestanding -c $^ -o $@
+
 kernel_entry.o: ./boot/kernel_entry.asm
 	nasm $^ -f elf -o $@
 
-kernel.elf: kernel_entry.o kernel.o
+kernel.elf: kernel_entry.o kernel.o ports.o
 	${LD} -o $@ -Ttext 0x1000 $^
 
 run: os.bin
