@@ -3,7 +3,7 @@
 CC = i386-elf-gcc
 GDB = i386-elf-gdb
 LD = i386-elf-ld
-EMU = qemu-system-x86_64
+EMU = qemu-system-i386
 
 # -g: Use debugging symbols in gcc
 CFLAGS = -g
