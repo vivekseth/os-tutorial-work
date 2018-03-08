@@ -38,7 +38,7 @@ run: os.bin
 
 debug: os.bin kernel.elf
 	${EMU} -s -fda ./os.bin \
-	& ${GDB} -ex "symbol-file kernel.elf" -ex "target remote localhost:1234" 
+	& ${GDB} -ex "symbol-file kernel.elf" -ex "target remote localhost:1234" -ex "b return_true"
 
 clean:
 	rm -f *.o

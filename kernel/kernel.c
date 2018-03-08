@@ -33,9 +33,23 @@ void clear_screen() {
 
 
 
+int return_true() {
+  return 1;
+}
+
+void wait_for_gdb() {
+  while (return_true()) {}
+  set_char_at('X', color_format(0, 15), 0, 0);
+}
+
+
+
+
 
 void _start() {
   VIDEO_MEMORY = (char *)0xb8000;
+
+  // wait_for_gdb();
 
   clear_screen();
 
