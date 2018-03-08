@@ -19,13 +19,13 @@ boot.bin: \
 	./boot/print.asm \
 	./boot/print_hex.asm \
 	./boot/switch_to_pm.asm
-	nasm -f bin ./boot/boot.asm -o boot.bin
+	nasm ./boot/boot.asm -f bin -o boot.bin
 
 kernel.bin: kernel_entry.o kernel.o
 	${LD} -o $@ -Ttext 0x1000 $^ --oformat binary
 
 kernel.o: ./kernel/kernel.c
-	${CC} -ffreestanding -c $^ -o $@
+	${CC} ${CFLAGS} -ffreestanding -c $^ -o $@
 
 kernel_entry.o: ./boot/kernel_entry.asm
 	nasm $^ -f elf -o $@
@@ -38,9 +38,11 @@ run: os.bin
 
 debug: os.bin kernel.elf
 	${EMU} -s -fda ./os.bin \
-	& ${GDB} -ex "target remote localhost:1234" -ex "symbol-file kernel.elf"
+	& ${GDB} -ex "symbol-file kernel.elf" -ex "target remote localhost:1234" 
 
 clean:
-	rm *.o
-	rm *.bin
+	rm -f *.o
+	rm -f *.bin
+	rm -f *.elf
+
 
