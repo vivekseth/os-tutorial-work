@@ -1,4 +1,5 @@
-#include <drivers/ports.h>
+// #include <drivers/ports.h>
+#include <drivers/screen.h>
 #include <kernel/debug.h>
 
 static char *VIDEO_MEMORY;
@@ -35,23 +36,37 @@ static char *VIDEO_MEMORY;
 
 
 
-
 void _start() {
-  wait_for_debugger();
+  
+  clear_screen();
 
-  VIDEO_MEMORY = (char *)0xb8000;
+  char *str = "Hello!\n"\
+  "\n"\
+  "Welcome to my kernel."\
+  "\n"\
+  "Use kprint() to print strings\n";
+  
+  kprint(str);
+  // kprint("\n");
+  // kprint("Welcome to my kernel.");
 
-  port_write_byte(0x3d4, 14);
-  int position = port_read_byte(0x3d5);
-  position = position << 8;
+  // // kprint("\n");
+  // kprint("Welcome to my kernel.\n");
+  // kprint("Use kprint() to print strings\n");
+  // kprint("Use kprint() to print strings\n");
+  // kprint("Use kprint() to print strings\n");
 
-  port_write_byte(0x3d4, 15);
-  position += port_read_byte(0x3d5);
+  // for (int row=0; row<25; row++) {
+  //   for (int col=0; col<80; col++) {
+  //     kprint_char_at('x', 0xF0, row, col);
+  //   }
+  // }
 
-  int offset_from_vga = position * 2;
 
-  VIDEO_MEMORY[offset_from_vga] = 'X'; 
-  VIDEO_MEMORY[offset_from_vga+1] = 0x0f;
+  // kprint_char_at('x', 0xF0, 0, 0);
+  // kprint_char_at('x', 0xF0, 1, 1);
+
+
 
   // clear_screen();
 
