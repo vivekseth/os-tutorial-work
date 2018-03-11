@@ -8,6 +8,8 @@ EMU = qemu-system-i386
 # -g: Use debugging symbols in gcc
 CFLAGS = -g -I./ -masm=intel
 
+# Build Disk Image
+
 os.bin: boot.bin kernel.bin
 	cat $^ > $@
 
@@ -21,13 +23,24 @@ boot.bin: \
 	./boot/switch_to_pm.asm
 	nasm ./boot/boot.asm -f bin -o boot.bin
 
-kernel.bin: kernel_entry.o kernel.o ports.o debug.o
+kernel.bin: kernel_entry.o kernel.o ports.o debug.o screen.o
 	${LD} -o $@ -Ttext 0x1000 $^ --oformat binary
+
+kernel.elf: kernel_entry.o kernel.o ports.o debug.o screen.o
+	${LD} -o $@ -Ttext 0x1000 $^
+
+debug: os.bin kernel.elf
+	echo 'no-op'
+
+# Compile Source
 
 kernel.o: ./kernel/kernel.c
 	${CC} ${CFLAGS} -ffreestanding -c $^ -o $@
 
 debug.o: ./kernel/debug.c
+	${CC} ${CFLAGS} -ffreestanding -c $^ -o $@
+
+screen.o: ./drivers/screen.c
 	${CC} ${CFLAGS} -ffreestanding -c $^ -o $@
 
 ports.o: ./drivers/ports.c
@@ -36,18 +49,16 @@ ports.o: ./drivers/ports.c
 kernel_entry.o: ./boot/kernel_entry.asm
 	nasm $^ -f elf -o $@
 
-kernel.elf: kernel_entry.o kernel.o ports.o debug.o
-	${LD} -o $@ -Ttext 0x1000 $^
+# Run Targets
 
 run: os.bin
 	${EMU} -fda ./os.bin
 
-debug: os.bin kernel.elf
-	echo 'no-op'
-
 run-debug: debug
 	${EMU} -s -fda ./os.bin \
 	& ${GDB} -ex "symbol-file kernel.elf" -ex "target remote localhost:1234" -ex "b wait_for_debugger"
+
+# Phony Targets
 
 clean:
 	rm -f *.o
