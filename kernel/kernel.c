@@ -37,47 +37,11 @@ static char *VIDEO_MEMORY;
 
 
 void _start() {
-  
   clear_screen();
 
-  char *str = "Hello!\n"\
-  "\n"\
-  "Welcome to my kernel."\
-  "\n"\
-  "Use kprint() to print strings\n";
-  
-  kprint(str);
-  // kprint("\n");
-  // kprint("Welcome to my kernel.");
-
-  // // kprint("\n");
-  // kprint("Welcome to my kernel.\n");
-  // kprint("Use kprint() to print strings\n");
-  // kprint("Use kprint() to print strings\n");
-  // kprint("Use kprint() to print strings\n");
-
-  // for (int row=0; row<25; row++) {
-  //   for (int col=0; col<80; col++) {
-  //     kprint_char_at('x', 0xF0, row, col);
-  //   }
-  // }
-
-
-  // kprint_char_at('x', 0xF0, 0, 0);
-  // kprint_char_at('x', 0xF0, 1, 1);
-
-
-
-  // clear_screen();
-
-  // char *video_memory = (char *)0xb8000;
-  // *VIDEO_MEMORY = 'X';
-  // *VIDEO_MEMORY
-  // *(VIDEO_MEMORY + 2) = '@';
-
-  // for (int i=0; i<80; i++) {
-  //   int x = i * 25 / 80;
-  //   int y = i;
-  //   set_char_at('X', 0xEE, y, x);  
-  // }
+  kprint("Hello!\n");
+  kprint("\n");
+  kprint("Welcome to my kernel.\n");
+  kprint("\n");
+  kprint("Use kprint() to print strings\n");
 }

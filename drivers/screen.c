@@ -88,19 +88,8 @@ int _kprint_char(char c, char f, int location) {
 
   int new_location;
   if (c == '\n') {    
-    // int row = _get_cursor_row(location);
-    // new_location = _create_cursor_location(row + 1, 0);
-    // c = '@';
-
-    new_location = (location + 80) - 1;
-
-    // int row = _get_cursor_row(location);
-    // int col = _get_cursor_column(location);
-    // int test_location = _create_cursor_location(row, col);
-
-    // int fb_offset = test_location * 2;
-    // framebuffer[fb_offset] = 'N'; 
-    // framebuffer[fb_offset+1] = VGA_FORMAT_RED_ON_WHITE;
+    int row = _get_cursor_row(location);
+    new_location = _create_cursor_location(row + 1, 0);
   }
   else {
     int fb_offset = location * 2;
