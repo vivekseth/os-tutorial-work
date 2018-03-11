@@ -1,5 +1,5 @@
-// TODO(vivek): add this path to the include path
-#include "../drivers/ports.h"
+#include <drivers/ports.h>
+#include <kernel/debug.h>
 
 static char *VIDEO_MEMORY;
 
@@ -37,6 +37,8 @@ static char *VIDEO_MEMORY;
 
 
 void _start() {
+  wait_for_debugger();
+
   VIDEO_MEMORY = (char *)0xb8000;
 
   port_write_byte(0x3d4, 14);
