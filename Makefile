@@ -11,7 +11,18 @@ CFLAGS = -g -I./ -masm=intel
 # Build Disk Image
 
 os.bin: boot.bin kernel.bin
-	cat $^ > $@
+	# 8192 = 16 sectors (512 * 16)
+	max_kernel_size=8192; \
+	kernel_size="$$(($$(wc -c < kernel.bin)))"; \
+	if (($$kernel_size < $$max_kernel_size)); \
+	then \
+		cat $^ > $@;\
+		echo "Kernel meets size requirement!";\
+	else \
+		echo "KERNEL IS TOO LARGE";\
+		echo "update load_kernel in boot.asm to accomodate new size";\
+		echo "num_sectors = $kernel_entry / 512";\
+	fi;
 
 boot.bin: \
 	./boot/boot.asm \
