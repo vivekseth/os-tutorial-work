@@ -32,6 +32,7 @@ void _set_cursor_location(int position);
 
 int _kprint_char(char c, char f, int location);
 
+char _create_format_code(char fc, char bc);
 
 // Public API Implementation
 
@@ -63,12 +64,30 @@ void kprint_char_at(char c, char f, int row, int col) {
   int fb_offset = location * 2;
   framebuffer[fb_offset] = c; 
   framebuffer[fb_offset+1] = f;
+}
 
-  // _set_cursor_location(location);
-  // _kprint_char(c, f);
+void _colorize_screen() {
+  clear_screen();
+  int cursor_location = _get_cursor_location();
+
+  int code = 0;
+  for (int y=0; y<25; y++) {
+    for (int x=0; x<80; x++) {
+      char f = code / 16;
+      char b = code % 16;
+      cursor_location = _kprint_char('@', _create_format_code(f, b), _create_cursor_location(y, x));
+      code = (code + 1) % (16 * 16);
+    }
+  }
+
+  _set_cursor_location(cursor_location);
 }
 
 // Private API Implementation
+
+char _create_format_code(char fc, char bc) {
+  return ((fc & 0xF) << 4) + (bc & 0xF);
+}
 
 int _get_cursor_row(int location) {
   return location / 80;
@@ -100,23 +119,6 @@ int _kprint_char(char c, char f, int location) {
 
   return new_location;
 }
-
-// char nothing() {
-//   char x = 0;
-//   for (int i=0; i<255; i++) {
-//     x = x ^ x;
-//     x += 1;
-//   }
-//   for (int i=0; i<255; i++) {
-//     x = x ^ x;
-//     x += 1;
-//   }
-//   for (int i=0; i<255; i++) {
-//     x = x ^ x;
-//     x += 1;
-//   }
-//   return x;
-// } 
 
 void _set_cursor_location(int position) {
   int low_byte = position & 0xFF;
