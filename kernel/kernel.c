@@ -12,10 +12,9 @@ void _start() {
   kprint("Use kprint() to print strings\n");
 
   for (int i=0; i<100; i++) {
-    char str[3];
-    str[0] = (i % 26) + 'a';
-    str[1] = '\n';
-    str[2] = 0;
+    char str[10];
+    int_to_ascii(i, str);
     kprint(str);
+    kprint("\n");
   }
 }
