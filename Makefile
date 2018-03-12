@@ -66,7 +66,7 @@ kernel_entry.o: ./boot/kernel_entry.asm
 # Run Targets
 
 run: os.bin
-	${EMU} -fda ./os.bin
+	${EMU} -vga cirrus -fda ./os.bin
 
 run-debug: debug
 	${EMU} -s -fda ./os.bin \

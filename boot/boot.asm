@@ -13,7 +13,7 @@ VBE_DATA_OFFSET equ 0x2000
   call new_line
 
   call load_kernel ; read kernel from disk
-  call load_vbe_data 
+  call set_vbe_mode
   call switch_to_pm
 
   jmp $ ; should never be called
@@ -42,12 +42,8 @@ load_kernel:
 [bits 16]
 load_vbe_data:
   pusha
-
-  mov dx, [MSG_LOAD_VBE]
-  call print_hex
-  call new_line
   
-  mov bx, MSG_LOAD_VBE
+  mov bx, MSG_LOAD_VBE_INFO
   call print
   call new_line
 
@@ -58,14 +54,6 @@ load_vbe_data:
   cmp ax, 0x004F
   je .done
 
-  mov dx, [MSG_LOAD_VBE]
-  call print_hex
-  call new_line
-
-  mov dx, ax
-  call print_hex
-  call new_line
-
   mov bx, MSG_ERR
   call print
   call new_line
@@ -73,6 +61,43 @@ load_vbe_data:
 .done:
   popa
   ret
+
+[bits 16]
+set_vbe_mode:
+  pusha
+
+  ; 0x0101, 0x0103, 0x0105
+
+  
+  mov bx, MSG_SET_VBE_MODE
+  call print
+  call new_line
+
+  mov di, VBE_DATA_OFFSET
+  mov ax, 0x4F02
+  mov bl, 0x0110
+  mov bh, 0x0 ; 0 | 00 0 00 ? ?
+  int 0x10
+  
+  cmp ax, 0x004F
+  je .done
+
+  mov bx, MSG_ERR
+  call print
+  call new_line
+
+  mov dx, ax
+  call print_hex
+  call new_line
+
+.done:
+  popa
+  ret
+
+
+
+
+
 
 ; 32-bit Protected Mode Entry Point
 [bits 32]
@@ -91,7 +116,8 @@ BOOT_DRIVE db 0 ; store boot drive (BIOS store this in dl on boot)
 MSG_REAL_MODE db "@16r", 0
 MSG_PROT_MODE db "@32p", 0
 MSG_LOAD_KERNEL db "@K", 0
-MSG_LOAD_VBE db "@vbe", 0
+MSG_LOAD_VBE_INFO db "@vbe_l", 0
+MSG_SET_VBE_MODE db "@vbe_l", 0
 MSG_ERR db "@Err", 0
 
 ; Padding and magic BIOS number
