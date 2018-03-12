@@ -1,6 +1,8 @@
 [org 0x7c00]
 [bits 16]
 KERNEL_OFFSET equ 0x1000
+VBE_DATA_OFFSET equ 0x2000
+
   mov [BOOT_DRIVE], dl
 
   mov bp, 0x9000
@@ -11,6 +13,7 @@ KERNEL_OFFSET equ 0x1000
   call new_line
 
   call load_kernel ; read kernel from disk
+  call load_vbe_data 
   call switch_to_pm
 
   jmp $ ; should never be called
@@ -36,6 +39,41 @@ load_kernel:
 
   ret
 
+[bits 16]
+load_vbe_data:
+  pusha
+
+  mov dx, [MSG_LOAD_VBE]
+  call print_hex
+  call new_line
+  
+  mov bx, MSG_LOAD_VBE
+  call print
+  call new_line
+
+  mov di, VBE_DATA_OFFSET
+  mov ax, 0x4F00
+  int 0x10
+  
+  cmp ax, 0x004F
+  je .done
+
+  mov dx, [MSG_LOAD_VBE]
+  call print_hex
+  call new_line
+
+  mov dx, ax
+  call print_hex
+  call new_line
+
+  mov bx, MSG_ERR
+  call print
+  call new_line
+
+.done:
+  popa
+  ret
+
 ; 32-bit Protected Mode Entry Point
 [bits 32]
 BEGIN_PM:
@@ -50,9 +88,11 @@ BEGIN_PM:
 
 ; Global Variables
 BOOT_DRIVE db 0 ; store boot drive (BIOS store this in dl on boot)
-MSG_REAL_MODE db "16b Real Mode", 0
-MSG_PROT_MODE db "32b Protected Mode", 0
-MSG_LOAD_KERNEL db "Loading Kernel", 0
+MSG_REAL_MODE db "@16r", 0
+MSG_PROT_MODE db "@32p", 0
+MSG_LOAD_KERNEL db "@K", 0
+MSG_LOAD_VBE db "@vbe", 0
+MSG_ERR db "@Err", 0
 
 ; Padding and magic BIOS number
 times 510-($-$$) db 0
