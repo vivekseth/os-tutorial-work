@@ -1,11 +1,12 @@
 #include <drivers/screen.h>
 #include <drivers/ports.h>
-
+#include <kernel/util.h>
 #include <kernel/debug.h>
 
 #define VGA_FRAME_ADDRESS (char*)0xB8000
 #define VGA_FRAME_MAX_COLUMNS 80
 #define VGA_FRAME_MAX_ROWS 25
+#define VGA_FRAME_BYTES_PER_PIXEL 2
 
 #define VGA_CRTC_ADDR_REG 0x3D4
 #define VGA_CRTC_DATA_REG 0x3D5
@@ -33,6 +34,8 @@ void _set_cursor_location(int position);
 int _kprint_char(char c, char f, int location);
 
 char _create_format_code(char fc, char bc);
+
+int _scroll_screen(int location);
 
 // Public API Implementation
 
@@ -101,6 +104,28 @@ int _create_cursor_location(int row, int col) {
   return (row * 80) + col;
 }
 
+int _scroll_screen(int location) {
+  char *framebuffer = VGA_FRAME_ADDRESS;
+
+  // Shift lines up 1 row
+  memory_copy(
+    framebuffer + (VGA_FRAME_BYTES_PER_PIXEL * VGA_FRAME_MAX_COLUMNS), 
+    framebuffer, 
+    (VGA_FRAME_BYTES_PER_PIXEL * VGA_FRAME_MAX_COLUMNS * (VGA_FRAME_MAX_ROWS - 1))
+  );
+
+  // Clear last line
+  for (int i=0; i<VGA_FRAME_MAX_COLUMNS; i++) {
+    int fb_offset = 2 * _create_cursor_location(VGA_FRAME_MAX_ROWS - 1, i);
+    framebuffer[fb_offset] = ' ';
+    framebuffer[fb_offset + 1] = VGA_FORMAT_WHITE_ON_BLACK;
+  }
+
+  int cur_row = _get_cursor_row(location);
+  int cur_col = _get_cursor_column(location);
+  return _create_cursor_location(cur_row - 1, cur_col);
+}
+
 // Prints character and increments cursor location
 int _kprint_char(char c, char f, int location) {
   char *framebuffer = VGA_FRAME_ADDRESS;
@@ -115,6 +140,12 @@ int _kprint_char(char c, char f, int location) {
     framebuffer[fb_offset] = c; 
     framebuffer[fb_offset+1] = f;
     new_location = location + 1;
+  }
+
+  int new_row = _get_cursor_row(new_location);
+  while (new_row >= VGA_FRAME_MAX_ROWS) {
+    new_location = _scroll_screen(new_location);
+    new_row = _get_cursor_row(new_location);
   }
 
   return new_location;

@@ -34,10 +34,10 @@ boot.bin: \
 	./boot/switch_to_pm.asm
 	nasm ./boot/boot.asm -f bin -o boot.bin
 
-kernel.bin: kernel_entry.o kernel.o ports.o debug.o screen.o
+kernel.bin: kernel_entry.o kernel.o ports.o debug.o screen.o util.o
 	${LD} -o $@ -Ttext 0x1000 $^ --oformat binary
 
-kernel.elf: kernel_entry.o kernel.o ports.o debug.o screen.o
+kernel.elf: kernel_entry.o kernel.o ports.o debug.o screen.o util.o
 	${LD} -o $@ -Ttext 0x1000 $^
 
 debug: os.bin kernel.elf
@@ -49,6 +49,9 @@ kernel.o: ./kernel/kernel.c
 	${CC} ${CFLAGS} -ffreestanding -c $^ -o $@
 
 debug.o: ./kernel/debug.c
+	${CC} ${CFLAGS} -ffreestanding -c $^ -o $@
+
+util.o: ./kernel/util.c
 	${CC} ${CFLAGS} -ffreestanding -c $^ -o $@
 
 screen.o: ./drivers/screen.c
